@@ -44,7 +44,16 @@
 
     protected override async Task OnParametersSetAsync()
     {
-        ordersWithStatus = await OrdersClient.GetOrders();
+        try
+        {
+            ordersWithStatus = await OrdersClient.GetOrders();
+
+        }
+        catch (AccessTokenNotAvailableException ex)
+        {
+            ex.Redirect();
+        }
+
     }
 }
 

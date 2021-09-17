@@ -73,6 +73,12 @@
                     await Task.Delay(4000);
                 }
             }
+            catch (AccessTokenNotAvailableException ex)
+            {
+                pollingCancellationToken.Cancel();
+                ex.Redirect();
+            }
+
             catch (Exception ex)
             {
                 invalidOrder = true;

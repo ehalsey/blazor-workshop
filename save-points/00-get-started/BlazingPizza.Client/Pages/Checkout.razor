@@ -2,6 +2,8 @@
 @inject OrdersClient OrdersClient
 @inject OrderState OrderState
 @inject NavigationManager NavigationManager
+@attribute [Authorize]
+
 
 <EditForm Model="OrderState.Order.DeliveryAddress" OnValidSubmit="PlaceOrder">
 
@@ -29,10 +31,19 @@
 
     async Task PlaceOrder()
     {
-        placingOrder = true;
-        var newOrderId = await OrdersClient.PlaceOrder(OrderState.Order);
-        OrderState.ResetOrder();
-        NavigationManager.NavigateTo($"myorders/{newOrderId}");
-        placingOrder = false;
+        try
+        {
+
+            placingOrder = true;
+            var newOrderId = await OrdersClient.PlaceOrder(OrderState.Order);
+            OrderState.ResetOrder();
+            NavigationManager.NavigateTo($"myorders/{newOrderId}");
+            placingOrder = false;
+
+        }
+        catch (AccessTokenNotAvailableException ex)
+        {
+            ex.Redirect();
+        }
     }
 }
