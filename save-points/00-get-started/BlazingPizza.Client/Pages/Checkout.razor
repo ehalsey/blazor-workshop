@@ -1,5 +1,5 @@
 ﻿@page "/checkout"
-@inject HttpClient HttpClient
+@inject OrdersClient OrdersClient
 @inject OrderState OrderState
 @inject NavigationManager NavigationManager
 
@@ -30,8 +30,7 @@
     async Task PlaceOrder()
     {
         placingOrder = true;
-        var response = await HttpClient.PostAsJsonAsync("orders", OrderState.Order);
-        var newOrderId = await response.Content.ReadFromJsonAsync<int>();
+        var newOrderId = await OrdersClient.PlaceOrder(OrderState.Order);
         OrderState.ResetOrder();
         NavigationManager.NavigateTo($"myorders/{newOrderId}");
         placingOrder = false;
